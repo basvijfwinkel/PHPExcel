@@ -26,7 +26,7 @@
  */
 
 
-require_once(PHPEXCEL_ROOT . 'PHPExcel/Shared/trend/BestFitC.php');
+require_once(PHPEXCEL_ROOT . 'PHPExcel/Shared/trend/BestFit.php');
 
 
 /**
