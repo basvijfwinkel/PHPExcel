@@ -353,7 +353,10 @@ class PHPExcel_Chart_DataSeriesValues
             if ($flatten) {
                 $this->_dataValues = PHPExcel_Calculation_Functions::flattenArray($newDataValues);
                 foreach($this->_dataValues as &$dataValue) {
-                    if ((!empty($dataValue)) && ($dataValue[0] == '#')) {
+                    // convert '#' or non numerical entries to 0.0 like Excel does automatically
+                    if ( ((!empty($dataValue)) && ($dataValue[0] == '#')) ||
+                       ((!empty($dataValue)) && ($this->_dataType == self::DATASERIES_TYPE_NUMBER) && (!is_numeric($dataValue))))
+                    {
                         $dataValue = 0.0;
                     }
                 }
