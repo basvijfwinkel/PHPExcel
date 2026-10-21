@@ -55,7 +55,8 @@ $dataSeriesSizes = array(
     new PHPExcel_Chart_DataSeriesValues('Number', $sheetname.'!$D$2:$D$5', NULL, 1),
 );
 
-// Bubble labels
+// Bubble label
+$rowcount = $objWorksheet->getHighestRow();
 $dataSeriesLabels  = array(new PHPExcel_Chart_DataSeriesValues('String', $sheetname.'!$A$2:$A$5', NULL, $rowcount));
 
 // Bubble scale
@@ -72,7 +73,7 @@ $series = new PHPExcel_Chart_DataSeries(
     NULL,                                          // plotDirection
     NULL,                                          // smooth line
     PHPExcel_Chart_DataSeries::STYLE_LINEMARKER,   // plotStyle
-    $dataSeriesSizes                               // BubbleChartSizea
+    $dataSeriesSizes,                               // BubbleChartSizea
     $dataSeriesLabels,                             // BubbleChartLabels
     $bubbleScale                                   // bubble scale
 );
@@ -119,6 +120,7 @@ $objWorksheet->addChart($chart);
 
 // Save Excel 2007 file
 echo date('H:i:s') , " Write to Excel2007 format" , EOL;
+/** @var PHPExcel_Writer_Excel2007 $objWriter */
 $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
 $objWriter->setIncludeCharts(TRUE);
 $objWriter->save(str_replace('.php', '.xlsx', __FILE__));

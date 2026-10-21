@@ -35,6 +35,9 @@
  */
 class PHPExcel_Style_IconSet extends PHPExcel_Style_GroupedConditional implements PHPExcel_IComparable
 {
+	protected $_extlst_cfvos;
+	protected $_namespace;
+
 	const ICONSET_NAME_3ARROWS         = '3Arrows';
 	const ICONSET_NAME_3ARROWSGRAY     = '3ArrowsGray';
 	const ICONSET_NAME_3Flags          = '3Flags';

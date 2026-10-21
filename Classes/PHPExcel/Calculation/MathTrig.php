@@ -65,7 +65,7 @@ class PHPExcel_Calculation_MathTrig {
 			rsort($factorArray);
 			return $factorArray;
 		} else {
-			return array((integer) $value);
+			return array((int) $value);
 		}
 	}	//	function _factors()
 
@@ -481,7 +481,7 @@ class PHPExcel_Calculation_MathTrig {
 			}
 		}
 		foreach($allPoweredFactors as $allPoweredFactor) {
-			$returnValue *= (integer) $allPoweredFactor;
+			$returnValue *= (int) $allPoweredFactor;
 		}
 		return $returnValue;
 	}	//	function LCM()
@@ -533,6 +533,7 @@ class PHPExcel_Calculation_MathTrig {
 		$row = $maxColumn = 0;
 		foreach($matrixValues as $matrixRow) {
 			if (!is_array($matrixRow)) { $matrixRow = array($matrixRow); }
+			if (count($matrixRow) != count($matrixValues)) { return PHPExcel_Calculation_Functions::VALUE(); }
 			$column = 0;
 			foreach($matrixRow as $matrixCell) {
 				if ((is_string($matrixCell)) || ($matrixCell === null)) {
@@ -575,6 +576,7 @@ class PHPExcel_Calculation_MathTrig {
 		$row = $maxColumn = 0;
 		foreach($matrixValues as $matrixRow) {
 			if (!is_array($matrixRow)) { $matrixRow = array($matrixRow); }
+			if (count($matrixRow) != count($matrixValues)) { return PHPExcel_Calculation_Functions::VALUE(); }
 			$column = 0;
 			foreach($matrixRow as $matrixCell) {
 				if ((is_string($matrixCell)) || ($matrixCell === null)) {
@@ -892,11 +894,11 @@ class PHPExcel_Calculation_MathTrig {
 
 	public static function ROMAN($aValue, $style=0) {
 		$aValue	= PHPExcel_Calculation_Functions::flattenSingleValue($aValue);
-		$style	= (is_null($style))	? 0 :	(integer) PHPExcel_Calculation_Functions::flattenSingleValue($style);
+		$style	= (is_null($style))	? 0 :	(int) PHPExcel_Calculation_Functions::flattenSingleValue($style);
 		if ((!is_numeric($aValue)) || ($aValue < 0) || ($aValue >= 4000)) {
 			return PHPExcel_Calculation_Functions::VALUE();
 		}
-		$aValue = (integer) $aValue;
+		$aValue = (int) $aValue;
 		if ($aValue == 0) {
 			return '';
 		}

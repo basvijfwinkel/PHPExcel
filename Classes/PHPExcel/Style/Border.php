@@ -73,6 +73,13 @@ class PHPExcel_Style_Border extends PHPExcel_Style_Supervisor implements PHPExce
 	protected $_parentPropertyName;
 
 	/**
+	 * color index
+	 *
+	 * @var integer
+	 */	
+	public  $colorIndex;
+
+	/**
 	 * Create a new PHPExcel_Style_Border
 	 *
 	 * @param	boolean	$isSupervisor	Flag indicating if this is a supervisor or not
@@ -262,7 +269,7 @@ class PHPExcel_Style_Border extends PHPExcel_Style_Supervisor implements PHPExce
 	 * @throws	PHPExcel_Exception
 	 * @return PHPExcel_Style_Border
 	 */
-	public function setColor(PHPExcel_Style_Color $pValue = null) {
+	public function setColor(?PHPExcel_Style_Color $pValue = null) {
 		// make sure parameter is a real color and not a supervisor
 		$color = $pValue->getIsSupervisor() ? $pValue->getSharedComponent() : $pValue;
 

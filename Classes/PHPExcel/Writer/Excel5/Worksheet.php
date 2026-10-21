@@ -200,6 +200,20 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
 	public $_fntHashIndex;
 
 	/**
+	 * Array of whether formulas should be calculated or just written
+	 *
+	 * @var array
+	 */
+	public $_preCalculateFormulas;
+
+	/**
+	 * Flag to print the headers or not
+	 *
+	 * @var integer
+	 */
+	public $_print_headers;
+
+	/**
 	 * Constructor
 	 *
 	 * @param int		&$str_total		Total number of strings
@@ -904,11 +918,11 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
 		$unknown	= 0x0000;			// Must be zero
 
 		// Strip the '=' or '@' sign at the beginning of the formula string
-		if ($formula{0} == '=') {
+		if ($formula[0] == '=') {
 			$formula = substr($formula,1);
 		} else {
 			// Error handling
-			$this->_writeString($row, $col, 'Unrecognised character for formula');
+			$this->_writeString($row, $col, 'Unrecognised character for formula', 15);
 			return -1;
 		}
 
@@ -1630,7 +1644,8 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
 	 */
 	private function _writeRangeProtection()
 	{
-		foreach ($this->_phpSheet->getProtectedCells() as $range => $password) {
+		foreach ($this->_phpSheet->getProtectedCells() as $range => $password) 
+		{
 			// number of ranges, e.g. 'A1:B3 C20:D25'
 			$cellRanges = explode(' ', $range);
 			$cref = count($cellRanges);
@@ -2577,7 +2592,7 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
 	 * Convert a GD-image into the internal format.
 	 *
 	 * @access private
-	 * @param resource $image The image to process
+	 * @param  GdImage $image The image to process
 	 * @return array Array with data and properties of the bitmap
 	 */
 	function _processBitmapGd($image) {
@@ -2722,7 +2737,7 @@ class PHPExcel_Writer_Excel5_Worksheet extends PHPExcel_Writer_Excel5_BIFFwriter
 	 *
 	 * @param PHPExcel_Shared_Escher $pValue
 	 */
-	public function setEscher(PHPExcel_Shared_Escher $pValue = null)
+	public function setEscher(?PHPExcel_Shared_Escher $pValue = null)
 	{
 		$this->_escher = $pValue;
 	}

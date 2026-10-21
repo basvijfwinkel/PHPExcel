@@ -35,6 +35,10 @@
  */
 class PHPExcel_Style_Fill extends PHPExcel_Style_Supervisor implements PHPExcel_IComparable
 {
+	/** Properties populated while reading or writing workbook data. */
+	public $endcolorIndex;
+	public $startcolorIndex;
+
 	/* Fill types */
 	const FILL_NONE							= 'none';
 	const FILL_SOLID						= 'solid';
@@ -254,11 +258,14 @@ class PHPExcel_Style_Fill extends PHPExcel_Style_Supervisor implements PHPExcel_
 	/**
 	 * Set Start Color
 	 *
-	 * @param	PHPExcel_Style_Color $pValue
+	 * @param	PHPExcel_Style_Color|null $pValue
 	 * @throws	PHPExcel_Exception
 	 * @return PHPExcel_Style_Fill
 	 */
-	public function setStartColor(PHPExcel_Style_Color $pValue = null) {
+	public function setStartColor(?PHPExcel_Style_Color $pValue = null) {
+		if ($pValue === null) {
+			throw new PHPExcel_Exception('Start color must be a PHPExcel_Style_Color instance.');
+		}
 		// make sure parameter is a real color and not a supervisor
 		$color = $pValue->getIsSupervisor() ? $pValue->getSharedComponent() : $pValue;
 
@@ -283,11 +290,14 @@ class PHPExcel_Style_Fill extends PHPExcel_Style_Supervisor implements PHPExcel_
 	/**
 	 * Set End Color
 	 *
-	 * @param	PHPExcel_Style_Color $pValue
+	 * @param	PHPExcel_Style_Color|null $pValue
 	 * @throws	PHPExcel_Exception
 	 * @return PHPExcel_Style_Fill
 	 */
-	public function setEndColor(PHPExcel_Style_Color $pValue = null) {
+	public function setEndColor(?PHPExcel_Style_Color $pValue = null) {
+		if ($pValue === null) {
+			throw new PHPExcel_Exception('End color must be a PHPExcel_Style_Color instance.');
+		}
 		// make sure parameter is a real color and not a supervisor
 		$color = $pValue->getIsSupervisor() ? $pValue->getSharedComponent() : $pValue;
 

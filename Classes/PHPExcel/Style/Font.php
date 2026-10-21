@@ -35,6 +35,9 @@
  */
 class PHPExcel_Style_Font extends PHPExcel_Style_Supervisor implements PHPExcel_IComparable
 {
+	/** Properties populated while reading or writing workbook data. */
+	public $colorIndex;
+
 	/* Underline types */
 	const UNDERLINE_NONE					= 'none';
 	const UNDERLINE_DOUBLE					= 'double';
@@ -493,7 +496,7 @@ class PHPExcel_Style_Font extends PHPExcel_Style_Supervisor implements PHPExcel_
 	 * @throws	PHPExcel_Exception
 	 * @return PHPExcel_Style_Font
 	 */
-	public function setColor(PHPExcel_Style_Color $pValue = null) {
+	public function setColor(?PHPExcel_Style_Color $pValue = null) {
 		// make sure parameter is a real color and not a supervisor
 		$color = $pValue->getIsSupervisor() ? $pValue->getSharedComponent() : $pValue;
 

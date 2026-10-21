@@ -540,10 +540,10 @@ class PHPExcel_Writer_HTML extends PHPExcel_Writer_Abstract implements PHPExcel_
 			}
 		}
 		$html = '';
-		$colMax++;
+		$colMax = str_increment($colMax);
 		while ($row < $rowMax) {
 			$html .= '<tr>';
-			for ($col = 'A'; $col != $colMax; ++$col) {
+			for ($col = 'A'; $col != $colMax; $col = str_increment($col)) {
 				$html .= '<td>';
 				$html .= $this->_writeImageInCell($pSheet, $col.$row);
 				if ($this->_includeCharts) {
@@ -1192,7 +1192,7 @@ class PHPExcel_Writer_HTML extends PHPExcel_Writer_Abstract implements PHPExcel_
 								array($this, 'formatColor')
 							);
 						}
-						$cellData = htmlspecialchars($cellData);
+						$cellData = htmlspecialchars((string) $cellData);
 						if ($pSheet->getParent()->getCellXfByIndex( $cell->getXfIndex() )->getFont()->getSuperScript()) {
 							$cellData = '<sup>'.$cellData.'</sup>';
 						} elseif ($pSheet->getParent()->getCellXfByIndex( $cell->getXfIndex() )->getFont()->getSubScript()) {

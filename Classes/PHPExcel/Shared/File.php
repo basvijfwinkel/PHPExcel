@@ -50,7 +50,7 @@ class PHPExcel_Shared_File
 	 * @param	 boolean	$useUploadTempDir		Use File Upload Temporary directory (true or false)
 	 */
 	public static function setUseUploadTempDirectory($useUploadTempDir = FALSE) {
-		self::$_useUploadTempDirectory = (boolean) $useUploadTempDir;
+		self::$_useUploadTempDirectory = (bool) $useUploadTempDir;
 	}	//	function setUseUploadTempDirectory()
 
 

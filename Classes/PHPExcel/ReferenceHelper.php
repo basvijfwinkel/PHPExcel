@@ -100,14 +100,21 @@ class PHPExcel_ReferenceHelper
 	 * @param   string   $b  Second cell to test (e.g. 'Z1')
 	 * @return  integer
 	 */
-	public static function cellSort($a, $b) {
-		sscanf($a,'%[A-Z]%d', $ac, $ar);
-		sscanf($b,'%[A-Z]%d', $bc, $br);
+	public static function cellSort($a, $b)
+	{
+		sscanf(strtoupper($a), '%[A-Z]%d', $ac, $ar);
+		sscanf(strtoupper($b), '%[A-Z]%d', $bc, $br);
 
-		if ($ar == $br) {
-			return strcasecmp(strlen($ac) . $ac, strlen($bc) . $bc);
+		if (
+			!is_string($ac) || !is_int($ar) ||
+			!is_string($bc) || !is_int($br)
+		) {
+			throw new InvalidArgumentException('Invalid cell reference.');
 		}
-		return ($ar < $br) ? -1 : 1;
+
+		return ($ar <=> $br)
+			?: (strlen($ac) <=> strlen($bc))
+			?: strcmp($ac, $bc);
 	}
 
 	/**
@@ -118,14 +125,9 @@ class PHPExcel_ReferenceHelper
 	 * @param   string   $b  Second cell to test (e.g. 'Z1')
 	 * @return  integer
 	 */
-	public static function cellReverseSort($a, $b) {
-		sscanf($a,'%[A-Z]%d', $ac, $ar);
-		sscanf($b,'%[A-Z]%d', $bc, $br);
-
-		if ($ar == $br) {
-			return 1 - strcasecmp(strlen($ac) . $ac, strlen($bc) . $bc);
-		}
-		return ($ar < $br) ? 1 : -1;
+	public static function cellReverseSort($a, $b)
+	{
+		return self::cellSort($b, $a);
 	}
 
 	/**
@@ -380,7 +382,7 @@ class PHPExcel_ReferenceHelper
 	 * @param   PHPExcel_Worksheet  $pSheet     The worksheet that we're editing
 	 * @throws  PHPExcel_Exception
 	 */
-	public function insertNewBefore($pBefore = 'A1', $pNumCols = 0, $pNumRows = 0, PHPExcel_Worksheet $pSheet = NULL)
+	public function insertNewBefore($pBefore = 'A1', $pNumCols = 0, $pNumRows = 0, ?PHPExcel_Worksheet $pSheet = NULL)
 	{
 		$remove = ($pNumCols < 0 || $pNumRows < 0);
 		$aCellCollection = $pSheet->getCellCollection();
@@ -609,8 +611,8 @@ class PHPExcel_ReferenceHelper
 							$endColID = PHPExcel_Cell::stringFromColumnIndex($rangeEnd[0]);
 							do {
 								$autoFilter->shiftColumn($startColID,$toColID);
-								++$startColID;
-								++$toColID;
+								$startColID = str_increment($startColID);
+								$toColID = str_increment($toColID);
 							} while ($startColID != $endColID);
 						}
 					}
@@ -903,9 +905,9 @@ class PHPExcel_ReferenceHelper
 			list($newColumn, $newRow) = PHPExcel_Cell::coordinateFromString( $pCellReference );
 
 			// Verify which parts should be updated
-			$updateColumn = (($newColumn{0} != '$') && ($beforeColumn{0} != '$') &&
+			$updateColumn = (($newColumn[0] != '$') && ($beforeColumn[0] != '$') &&
 							 PHPExcel_Cell::columnIndexFromString($newColumn) >= PHPExcel_Cell::columnIndexFromString($beforeColumn));
-			$updateRow = (($newRow{0} != '$') && ($beforeRow{0} != '$') &&
+			$updateRow = (($newRow[0] != '$') && ($beforeRow[0] != '$') &&
 						  $newRow >= $beforeRow);
 
 			// Create new column reference

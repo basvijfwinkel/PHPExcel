@@ -243,7 +243,7 @@ class PHPExcel_Chart_Axis extends
    */
 
   public function setAxisOrientation($orientation) {
-    $this->orientation = (string) $orientation;
+    $this->_axis_options['orientation'] = (string) $orientation;
   }
 
   /**

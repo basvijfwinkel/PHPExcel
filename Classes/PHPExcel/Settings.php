@@ -363,11 +363,8 @@ class PHPExcel_Settings
      */
     public static function setLibXmlLoaderOptions($options = null)
     {
-        if (is_null($options) && defined(LIBXML_DTDLOAD)) {
+        if (is_null($options) && defined('LIBXML_DTDLOAD')) {
             $options = LIBXML_DTDLOAD | LIBXML_DTDATTR;
-        }
-        if (version_compare(PHP_VERSION, '5.2.11') >= 0) {
-            @libxml_disable_entity_loader($options == (LIBXML_DTDLOAD | LIBXML_DTDATTR)); 
         }
         self::$_libXmlLoaderOptions = $options;
     } // function setLibXmlLoaderOptions
@@ -380,11 +377,8 @@ class PHPExcel_Settings
      */
     public static function getLibXmlLoaderOptions()
     {
-        if (is_null(self::$_libXmlLoaderOptions) && defined(LIBXML_DTDLOAD)) {
+        if (is_null(self::$_libXmlLoaderOptions) && defined('LIBXML_DTDLOAD')) {
             self::setLibXmlLoaderOptions(LIBXML_DTDLOAD | LIBXML_DTDATTR);
-        }
-        if (version_compare(PHP_VERSION, '5.2.11') >= 0) {
-            @libxml_disable_entity_loader(self::$_libXmlLoaderOptions == (LIBXML_DTDLOAD | LIBXML_DTDATTR));
         }
         return self::$_libXmlLoaderOptions;
     } // function getLibXmlLoaderOptions

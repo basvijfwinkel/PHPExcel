@@ -539,7 +539,7 @@ class PHPExcel_Reader_Excel2007 extends PHPExcel_Reader_Abstract implements PHPE
 							}
                             $quotePrefix = false;
 							if (isset($xf["quotePrefix"])) {
-                                $quotePrefix = (boolean) $xf["quotePrefix"];
+                                $quotePrefix = (bool) $xf["quotePrefix"];
                             }
 							//$numFmt = str_replace('mm', 'i', $numFmt);
 							//$numFmt = str_replace('h', 'H', $numFmt);
@@ -928,7 +928,7 @@ class PHPExcel_Reader_Excel2007 extends PHPExcel_Reader_Abstract implements PHPE
 										if (is_numeric($value) && $cellDataType != 's') {
 											if ($value == (int)$value) $value = (int)$value;
 											elseif ($value == (float)$value) $value = (float)$value;
-											elseif ($value == (double)$value) $value = (double)$value;
+											elseif ($value == (float)$value) $value = (float)$value;
 										}
 
 										// Rich text?
@@ -1101,7 +1101,7 @@ class PHPExcel_Reader_Excel2007 extends PHPExcel_Reader_Abstract implements PHPE
                                     $autoFilter->setRange($autoFilterRange);
 
                                     foreach ($xmlSheet->autoFilter->filterColumn as $filterColumn) {
-                                        $column = $autoFilter->getColumnByOffset((integer) $filterColumn["colId"]);
+                                        $column = $autoFilter->getColumnByOffset((int) $filterColumn["colId"]);
                                         //	Check for standard filters
                                         if ($filterColumn->filters) {
                                             $column->setFilterType(PHPExcel_Worksheet_AutoFilter_Column::AUTOFILTER_FILTERTYPE_FILTER);
@@ -1763,14 +1763,14 @@ class PHPExcel_Reader_Excel2007 extends PHPExcel_Reader_Abstract implements PHPE
 											break;
 
 										default:
-											if ($mapSheetId[(integer) $definedName['localSheetId']] !== null) {
+											if ($mapSheetId[(int) $definedName['localSheetId']] !== null) {
 												$range = explode('!', (string)$definedName);
 												if (count($range) == 2) {
 													$range[0] = str_replace("''", "'", $range[0]);
 													$range[0] = str_replace("'", "", $range[0]);
 													if ($worksheet = $docSheet->getParent()->getSheetByName($range[0])) {
 														$extractedRange = str_replace('$', '', $range[1]);
-														$scope = $docSheet->getParent()->getSheet($mapSheetId[(integer) $definedName['localSheetId']]);
+														$scope = $docSheet->getParent()->getSheet($mapSheetId[(int) $definedName['localSheetId']]);
 														$excel->addNamedRange( new PHPExcel_NamedRange((string)$definedName['name'], $worksheet, $extractedRange, true, $scope) );
 													}
 												}

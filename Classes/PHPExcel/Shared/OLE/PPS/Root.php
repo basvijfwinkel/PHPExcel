@@ -29,6 +29,14 @@
 */
 class PHPExcel_Shared_OLE_PPS_Root extends PHPExcel_Shared_OLE_PPS
 	{
+	protected $_tmp_filename;
+
+	/** Properties populated while reading or writing workbook data. */
+	public $_BIG_BLOCK_SIZE;
+	public $_FILEH_;
+	public $_SMALL_BLOCK_SIZE;
+	public $_tempDir;
+
 
 	/**
 	 * Directory for temporary files
@@ -37,8 +45,8 @@ class PHPExcel_Shared_OLE_PPS_Root extends PHPExcel_Shared_OLE_PPS
 	protected $_tmp_dir		= NULL;
 
 	/**
-	 * @param integer $time_1st A timestamp
-	 * @param integer $time_2nd A timestamp
+	 * @param integer|null $time_1st A timestamp
+	 * @param integer|null $time_2nd A timestamp
 	 */
 	public function __construct($time_1st, $time_2nd, $raChild)
 	{

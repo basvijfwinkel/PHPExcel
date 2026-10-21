@@ -35,6 +35,10 @@
  */
 class PHPExcel_Writer_Excel5 extends PHPExcel_Writer_Abstract implements PHPExcel_Writer_IWriter
 {
+	/** Properties populated while reading or writing workbook data. */
+	public $_writerWorkbook;
+	public $_writerWorksheets;
+
 	/**
 	 * PHPExcel object
 	 *

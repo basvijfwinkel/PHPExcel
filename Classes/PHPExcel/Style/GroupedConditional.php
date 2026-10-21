@@ -2,6 +2,9 @@
 
 class PHPExcel_Style_GroupedConditional extends PHPExcel_Style_Supervisor
 {
+	protected $_cfvos;
+	protected $_id;
+
 	/**
 	* cellReference definition : (eg:A1:C5)
 	*

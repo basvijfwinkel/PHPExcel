@@ -33,6 +33,8 @@
  * @package    PHPExcel_Worksheet
  * @copyright  Copyright (c) 2006 - 2014 PHPExcel (http://www.codeplex.com/PHPExcel)
  */
+
+
 class PHPExcel_Worksheet_AutoFilter
 {
 	/**
@@ -65,7 +67,7 @@ class PHPExcel_Worksheet_AutoFilter
 	 *	@param	string		$pRange		Cell range (i.e. A1:E10)
 	 * @param PHPExcel_Worksheet $pSheet
      */
-    public function __construct($pRange = '', PHPExcel_Worksheet $pSheet = NULL)
+    public function __construct($pRange = '', ?PHPExcel_Worksheet $pSheet = NULL)
     {
 		$this->_range = $pRange;
 		$this->_workSheet = $pSheet;
@@ -86,7 +88,7 @@ class PHPExcel_Worksheet_AutoFilter
 	 * @param PHPExcel_Worksheet $pSheet
 	 * @return PHPExcel_Worksheet_AutoFilter
 	 */
-	public function setParent(PHPExcel_Worksheet $pSheet = NULL) {
+	public function setParent(?PHPExcel_Worksheet $pSheet = NULL) {
 		$this->_workSheet = $pSheet;
 
 		return $this;
@@ -325,15 +327,15 @@ class PHPExcel_Worksheet_AutoFilter
 			$dateValue = PHPExcel_Shared_Date::ExcelToPHP($cellValue);
 			if ($cellValue < 1) {
 				//	Just the time part
-				$dtVal = date('His',$dateValue);
+				$dtVal = date('His',(int)$dateValue);
 				$dateSet = $dateSet['time'];
 			} elseif($cellValue == floor($cellValue)) {
 				//	Just the date part
-				$dtVal = date('Ymd',$dateValue);
+				$dtVal = date('Ymd',(int)$dateValue);
 				$dateSet = $dateSet['date'];
 			} else {
 				//	date and time parts
-				$dtVal = date('YmdHis',$dateValue);
+				$dtVal = date('YmdHis',(int)$dateValue);
 				$dateSet = $dateSet['dateTime'];
 			}
 			foreach($dateSet as $dateValue) {
@@ -366,6 +368,7 @@ class PHPExcel_Worksheet_AutoFilter
 			}
 		}
 		$returnVal = ($join == PHPExcel_Worksheet_AutoFilter_Column::AUTOFILTER_COLUMN_JOIN_AND);
+
 		foreach($dataSet as $rule) {
 			if (is_numeric($rule['value'])) {
 				//	Numeric values are tested using the appropriate operator
@@ -388,6 +391,8 @@ class PHPExcel_Worksheet_AutoFilter
 					case PHPExcel_Worksheet_AutoFilter_Column_Rule::AUTOFILTER_COLUMN_RULE_LESSTHANOREQUAL :
 						$retVal	= ($cellValue <= $rule['value']);
 						break;
+					default :
+						$retVal	= TRUE;
 				}
 			} elseif($rule['value'] == '') {
 				switch ($rule['operator']) {
@@ -438,7 +443,7 @@ class PHPExcel_Worksheet_AutoFilter
 		}
 
 		if (is_numeric($cellValue)) {
-			$dateValue = date('m',PHPExcel_Shared_Date::ExcelToPHP($cellValue));
+			$dateValue = date('m',(int)PHPExcel_Shared_Date::ExcelToPHP($cellValue));
 			if (in_array($dateValue,$monthSet)) {
 				return TRUE;
 			}
@@ -590,7 +595,7 @@ class PHPExcel_Worksheet_AutoFilter
 			sort($dataValues);
 		}
 
-		return array_pop(array_slice($dataValues,0,$ruleValue));
+		return $dataValues[$ruleValue - 1] ?? null; 
 	}
 
 	/**
@@ -730,23 +735,29 @@ class PHPExcel_Worksheet_AutoFilter
 							);
 						} else {
 							//	Date based
-							if ($dynamicRuleType{0} == 'M' || $dynamicRuleType{0} == 'Q') {
+							if ($dynamicRuleType[0] == 'M' || $dynamicRuleType[0] == 'Q') 
+							{
 								//	Month or Quarter
-								sscanf($dynamicRuleType,'%[A-Z]%d', $periodType, $period);
-								if ($periodType == 'M') {
+                                list($periodType, $period) = sscanf($dynamicRuleType, '%[A-Z]%d');								
+								if ($periodType == 'M')
+								{
 									$ruleValues = array($period);
-								} else {
+								} 
+								else 
+								{
 									--$period;
 									$periodEnd = (1+$period)*3;
 									$periodStart = 1+$period*3;
-									$ruleValues = range($periodStart,periodEnd);
+									$ruleValues = range($periodStart,$periodEnd);
 								}
 								$columnFilterTests[$columnID] = array(
 									'method' => '_filterTestInPeriodDateSet',
 									'arguments' => $ruleValues
-								);
+								     );
 								$filterColumn->setAttributes(array());
-							} else {
+							} 
+							else 
+							{
 								//	Date Range
 								$columnFilterTests[$columnID] = $this->_dynamicFilterDateRange($dynamicRuleType, $filterColumn);
 								break;

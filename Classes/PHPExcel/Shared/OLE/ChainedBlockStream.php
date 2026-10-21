@@ -37,6 +37,8 @@
  */
 class PHPExcel_Shared_OLE_ChainedBlockStream
 {
+	/** @var resource|null Stream context supplied by PHP. */
+	public $context;
 	/**
 	 * The OLE container of the file that is being read.
 	 * @var OLE

@@ -60,7 +60,7 @@ class PHPExcel_Chart_Title
     /**
      * Create a new PHPExcel_Chart_Title
      */
-    public function __construct($caption = null, PHPExcel_Chart_Layout $layout = null)
+    public function __construct($caption = null, ?PHPExcel_Chart_Layout $layout = null)
     {
         $this->_caption = $caption;
         $this->_layout = $layout;
@@ -115,7 +115,7 @@ class PHPExcel_Chart_Title
      * @param PHPExcel_Style_Font $font
      * @return PHPExcel_Chart_Title
      */
-    public function setFont(PHPExcel_Style_Font $font = null)
+    public function setFont(?PHPExcel_Style_Font $font = null)
     {
         $this->font = $font;
         return $this;

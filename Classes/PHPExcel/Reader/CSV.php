@@ -193,7 +193,7 @@ class PHPExcel_Reader_CSV extends PHPExcel_Reader_Abstract implements PHPExcel_R
 		$worksheetInfo[0]['totalColumns'] = 0;
 
 		// Loop through each line of the file in turn
-		while (($rowData = fgetcsv($fileHandle, 0, $this->_delimiter, $this->_enclosure)) !== FALSE) {
+		while (($rowData = fgetcsv($fileHandle, 0, $this->_delimiter, $this->_enclosure, '\\')) !== FALSE) {
 			$worksheetInfo[0]['totalRows']++;
 			$worksheetInfo[0]['lastColumnIndex'] = max($worksheetInfo[0]['lastColumnIndex'], count($rowData) - 1);
 		}
@@ -233,8 +233,6 @@ class PHPExcel_Reader_CSV extends PHPExcel_Reader_Abstract implements PHPExcel_R
 	 */
 	public function loadIntoExisting($pFilename, PHPExcel $objPHPExcel)
 	{
-		$lineEnding = ini_get('auto_detect_line_endings');
-		ini_set('auto_detect_line_endings', true);
 
 		// Open file
 		$this->_openFile($pFilename);
@@ -264,7 +262,7 @@ class PHPExcel_Reader_CSV extends PHPExcel_Reader_Abstract implements PHPExcel_R
 		}
 
 		// Loop through each line of the file in turn
-		while (($rowData = fgetcsv($fileHandle, 0, $this->_delimiter, $this->_enclosure)) !== FALSE) {
+		while (($rowData = fgetcsv($fileHandle, 0, $this->_delimiter, $this->_enclosure, '\\')) !== FALSE) {
 			$columnLetter = 'A';
 			foreach($rowData as $rowDatum) {
 				if ($rowDatum != '' && $this->_readFilter->readCell($columnLetter, $currentRow)) {
@@ -279,7 +277,7 @@ class PHPExcel_Reader_CSV extends PHPExcel_Reader_Abstract implements PHPExcel_R
 					// Set cell value
 					$sheet->getCell($columnLetter . $currentRow)->setValue($rowDatum);
 				}
-				++$columnLetter;
+				$columnLetter = str_increment($columnLetter);
 			}
 			++$currentRow;
 		}
@@ -291,7 +289,6 @@ class PHPExcel_Reader_CSV extends PHPExcel_Reader_Abstract implements PHPExcel_R
 			$this->_contiguousRow = $currentRow;
 		}
 
-		ini_set('auto_detect_line_endings', $lineEnding);
 
 		// Return
 		return $objPHPExcel;

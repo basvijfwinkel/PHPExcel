@@ -212,7 +212,7 @@
   //   Note that no real action is taken, if the archive does not exist it is not
   //   created. Use create() for that.
   // --------------------------------------------------------------------------------
-  function PclZip($p_zipname)
+  function __construct($p_zipname)
   {
 
     // ----- Tests the zlib
@@ -1833,19 +1833,8 @@
     }
     
     // ----- Get 'memory_limit' configuration value
-    $v_memory_limit = ini_get('memory_limit');
-    $v_memory_limit = trim($v_memory_limit);
-    $last = strtolower(substr($v_memory_limit, -1));
- 
-    if($last == 'g')
-        //$v_memory_limit = $v_memory_limit*1024*1024*1024;
-        $v_memory_limit = $v_memory_limit*1073741824;
-    if($last == 'm')
-        //$v_memory_limit = $v_memory_limit*1024*1024;
-        $v_memory_limit = $v_memory_limit*1048576;
-    if($last == 'k')
-        $v_memory_limit = $v_memory_limit*1024;
-            
+    $v_memory_limit = ini_parse_quantity(ini_get('memory_limit'));
+
     $p_options[PCLZIP_OPT_TEMP_FILE_THRESHOLD] = floor($v_memory_limit*PCLZIP_TEMPORARY_FILE_RATIO);
     
 

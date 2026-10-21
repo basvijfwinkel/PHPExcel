@@ -614,7 +614,7 @@ class PHPExcel
      * Get index for sheet
      *
      * @param  PHPExcel_Worksheet $pSheet
-     * @return Sheet index
+     * @return int index
      * @throws PHPExcel_Exception
      */
     public function getIndex(PHPExcel_Worksheet $pSheet)
@@ -773,7 +773,7 @@ class PHPExcel
      * Add named range
      *
      * @param  PHPExcel_NamedRange $namedRange
-     * @return PHPExcel
+     * @return boolean
      */
     public function addNamedRange(PHPExcel_NamedRange $namedRange) {
         if ($namedRange->getScope() == null) {
@@ -793,7 +793,7 @@ class PHPExcel
      * @param  PHPExcel_Worksheet|null $pSheet Scope. Use null for global scope
      * @return PHPExcel_NamedRange|null
      */
-    public function getNamedRange($namedRange, PHPExcel_Worksheet $pSheet = null) {
+    public function getNamedRange($namedRange, ?PHPExcel_Worksheet $pSheet = null) {
         $returnValue = null;
 
         if ($namedRange != '' && ($namedRange !== NULL)) {
@@ -818,7 +818,7 @@ class PHPExcel
      * @param  PHPExcel_Worksheet|null  $pSheet  Scope: use null for global scope.
      * @return PHPExcel
      */
-    public function removeNamedRange($namedRange, PHPExcel_Worksheet $pSheet = null) {
+    public function removeNamedRange($namedRange, ?PHPExcel_Worksheet $pSheet = null) {
         if ($pSheet === NULL) {
             if (isset($this->_namedRanges[$namedRange])) {
                 unset($this->_namedRanges[$namedRange]);

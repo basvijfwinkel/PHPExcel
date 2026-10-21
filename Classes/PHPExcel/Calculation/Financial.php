@@ -2116,6 +2116,8 @@ class PHPExcel_Calculation_Financial {
 		$f1 = self::XNPV($x1, $values, $dates);
 		$f2 = self::XNPV($x2, $values, $dates);
 		for ($i = 0; $i < FINANCIAL_MAX_ITERATIONS; ++$i) {
+			if (!is_numeric($f1)) return $f1;
+			if (!is_numeric($f2)) return $f2;
 			if (($f1 * $f2) < 0.0) break;
 			if (abs($f1) < abs($f2)) {
 				$f1 = self::XNPV($x1 += 1.6 * ($x1 - $x2), $values, $dates);
@@ -2126,6 +2128,7 @@ class PHPExcel_Calculation_Financial {
 		if (($f1 * $f2) > 0.0) return PHPExcel_Calculation_Functions::VALUE();
 
 		$f = self::XNPV($x1, $values, $dates);
+		if (!is_numeric($f)) return $f;
 		if ($f < 0.0) {
 			$rtb = $x1;
 			$dx = $x2 - $x1;
@@ -2138,6 +2141,7 @@ class PHPExcel_Calculation_Financial {
 			$dx *= 0.5;
 			$x_mid = $rtb + $dx;
 			$f_mid = self::XNPV($x_mid, $values, $dates);
+			if (!is_numeric($f_mid)) return $f_mid;
 			if ($f_mid <= 0.0) $rtb = $x_mid;
 			if ((abs($f_mid) < FINANCIAL_PRECISION) || (abs($dx) < FINANCIAL_PRECISION)) return $x_mid;
 		}
@@ -2172,7 +2176,11 @@ class PHPExcel_Calculation_Financial {
 		$xnpv = 0.0;
 		for ($i = 0; $i < $valCount; ++$i) {
 			if (!is_numeric($values[$i])) return PHPExcel_Calculation_Functions::VALUE();
-			$xnpv += $values[$i] / pow(1 + $rate, PHPExcel_Calculation_DateTime::DATEDIF($dates[0],$dates[$i],'d') / 365);
+			$days = PHPExcel_Calculation_DateTime::DATEDIF($dates[0], $dates[$i], 'd');
+			if (!is_numeric($days)) return $days;
+			$discount = pow(1 + $rate, $days / 365);
+			if ($discount == 0) return PHPExcel_Calculation_Functions::DIV0();
+			$xnpv += $values[$i] / $discount;
 		}
 		return (is_finite($xnpv)) ? $xnpv : PHPExcel_Calculation_Functions::VALUE();
 	}	//	function XNPV()

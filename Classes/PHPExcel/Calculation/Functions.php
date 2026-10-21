@@ -308,9 +308,9 @@ class PHPExcel_Calculation_Functions {
 
 	public static function _ifCondition($condition) {
 		$condition	= PHPExcel_Calculation_Functions::flattenSingleValue($condition);
-		if (!isset($condition{0}))
+		if (!isset($condition[0]))
 			$condition = '=""';
-		if (!in_array($condition{0},array('>', '<', '='))) {
+		if (!in_array($condition[0],array('>', '<', '='))) {
 			if (!is_numeric($condition)) { $condition = PHPExcel_Calculation::_wrapResult(strtoupper($condition)); }
 			return '='.$condition;
 		} else {
@@ -416,7 +416,7 @@ class PHPExcel_Calculation_Functions {
 			return self::NAME();
 		if ((is_bool($value)) || ((is_string($value)) && (!is_numeric($value))))
 			return self::VALUE();
-		return ($value % 2 == 0);
+		return ((int) $value % 2 == 0);
 	}	//	function IS_EVEN()
 
 
@@ -433,7 +433,7 @@ class PHPExcel_Calculation_Functions {
 			return self::NAME();
 		if ((is_bool($value)) || ((is_string($value)) && (!is_numeric($value))))
 			return self::VALUE();
-		return (abs($value) % 2 == 1);
+		return ((int) abs($value) % 2 == 1);
 	}	//	function IS_ODD()
 
 
@@ -527,11 +527,11 @@ class PHPExcel_Calculation_Functions {
 				return $value;
 				break;
 			case 'boolean'	:
-				return (integer) $value;
+				return (int) $value;
 				break;
 			case 'string'	:
 				//	Errors
-				if ((strlen($value) > 0) && ($value{0} == '#')) {
+				if ((strlen($value) > 0) && ($value[0] == '#')) {
 					return $value;
 				}
 				break;
@@ -580,7 +580,7 @@ class PHPExcel_Calculation_Functions {
 				return 64;
 		} elseif(is_string($value)) {
 			//	Errors
-			if ((strlen($value) > 0) && ($value{0} == '#')) {
+			if ((strlen($value) > 0) && ($value[0] == '#')) {
 				return 16;
 			}
 			return 2;

@@ -947,7 +947,7 @@ class PHPExcel_Style_DataBar extends PHPExcel_Style_GroupedConditional implement
     public function setAxisColor($value) 
     { 
         $this->_axisColor = $value;
-        $this->_axiscolorAuto = false;
+        $this->_axisColorAuto = false;
         return $this;
     }
     

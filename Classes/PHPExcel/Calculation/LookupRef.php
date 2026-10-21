@@ -115,7 +115,7 @@ class PHPExcel_Calculation_LookupRef {
 		if (is_array($cellAddress)) {
 			foreach($cellAddress as $columnKey => $value) {
 				$columnKey = preg_replace('/[^a-z]/i','',$columnKey);
-				return (integer) PHPExcel_Cell::columnIndexFromString($columnKey);
+				return (int) PHPExcel_Cell::columnIndexFromString($columnKey);
 			}
 		} else {
 			if (strpos($cellAddress,'!') !== false) {
@@ -127,12 +127,12 @@ class PHPExcel_Calculation_LookupRef {
 				$endAddress = preg_replace('/[^a-z]/i','',$endAddress);
 				$returnValue = array();
 				do {
-					$returnValue[] = (integer) PHPExcel_Cell::columnIndexFromString($startAddress);
+					$returnValue[] = (int) PHPExcel_Cell::columnIndexFromString($startAddress);
 				} while ($startAddress++ != $endAddress);
 				return $returnValue;
 			} else {
 				$cellAddress = preg_replace('/[^a-z]/i','',$cellAddress);
-				return (integer) PHPExcel_Cell::columnIndexFromString($cellAddress);
+				return (int) PHPExcel_Cell::columnIndexFromString($cellAddress);
 			}
 		}
 	}	//	function COLUMN()
@@ -189,7 +189,7 @@ class PHPExcel_Calculation_LookupRef {
 		if (is_array($cellAddress)) {
 			foreach($cellAddress as $columnKey => $rowValue) {
 				foreach($rowValue as $rowKey => $cellValue) {
-					return (integer) preg_replace('/[^0-9]/i','',$rowKey);
+					return (int) preg_replace('/[^0-9]/i','',$rowKey);
 				}
 			}
 		} else {
@@ -202,12 +202,12 @@ class PHPExcel_Calculation_LookupRef {
 				$endAddress = preg_replace('/[^0-9]/','',$endAddress);
 				$returnValue = array();
 				do {
-					$returnValue[][] = (integer) $startAddress;
+					$returnValue[][] = (int) $startAddress;
 				} while ($startAddress++ != $endAddress);
 				return $returnValue;
 			} else {
 				list($cellAddress) = explode(':',$cellAddress);
-				return (integer) preg_replace('/[^0-9]/','',$cellAddress);
+				return (int) preg_replace('/[^0-9]/','',$cellAddress);
 			}
 		}
 	}	//	function ROW()
@@ -256,7 +256,7 @@ class PHPExcel_Calculation_LookupRef {
 	 * @param	PHPExcel_Cell	$pCell			The cell to set the hyperlink in
 	 * @return	mixed	The value of $displayName (or $linkURL if $displayName was blank)
 	 */
-	public static function HYPERLINK($linkURL = '', $displayName = null, PHPExcel_Cell $pCell = null) {
+	public static function HYPERLINK($linkURL = '', $displayName = null, ?PHPExcel_Cell $pCell = null) {
 		$args = func_get_args();
 		$pCell = array_pop($args);
 
@@ -295,7 +295,7 @@ class PHPExcel_Calculation_LookupRef {
 	 * @todo	Support for the optional a1 parameter introduced in Excel 2010
 	 *
 	 */
-	public static function INDIRECT($cellAddress = NULL, PHPExcel_Cell $pCell = NULL) {
+	public static function INDIRECT($cellAddress = NULL, ?PHPExcel_Cell $pCell = NULL) {
 		$cellAddress	= PHPExcel_Calculation_Functions::flattenSingleValue($cellAddress);
 		if (is_null($cellAddress) || $cellAddress === '') {
 			return PHPExcel_Calculation_Functions::REF();
@@ -716,7 +716,7 @@ class PHPExcel_Calculation_LookupRef {
 		}
 
 		if (!$not_exact_match) {
-			uasort($lookup_array,array('self','_vlookupSort'));
+			uasort($lookup_array,array(self::class, '_vlookupSort'));
 		}
 
 		$rowNumber = $rowValue = False;

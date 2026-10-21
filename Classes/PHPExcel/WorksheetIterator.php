@@ -56,7 +56,7 @@ class PHPExcel_WorksheetIterator implements Iterator
      *
      * @param PHPExcel         $subject
      */
-    public function __construct(PHPExcel $subject = null)
+    public function __construct(?PHPExcel $subject = null)
     {
         // Set subject
         $this->_subject = $subject;
@@ -73,7 +73,7 @@ class PHPExcel_WorksheetIterator implements Iterator
     /**
      * Rewind iterator
      */
-    public function rewind()
+    public function rewind(): void
     {
         $this->_position = 0;
     }
@@ -83,7 +83,7 @@ class PHPExcel_WorksheetIterator implements Iterator
      *
      * @return PHPExcel_Worksheet
      */
-    public function current()
+    public function current(): mixed
     {
         return $this->_subject->getSheet($this->_position);
     }
@@ -93,7 +93,7 @@ class PHPExcel_WorksheetIterator implements Iterator
      *
      * @return int
      */
-    public function key()
+    public function key(): mixed
     {
         return $this->_position;
     }
@@ -101,7 +101,7 @@ class PHPExcel_WorksheetIterator implements Iterator
     /**
      * Next value
      */
-    public function next()
+    public function next(): void
     {
         ++$this->_position;
     }
@@ -111,7 +111,7 @@ class PHPExcel_WorksheetIterator implements Iterator
      *
      * @return boolean
      */
-    public function valid()
+    public function valid(): bool
     {
         return $this->_position < $this->_subject->getSheetCount();
     }

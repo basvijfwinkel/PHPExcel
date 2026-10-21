@@ -66,7 +66,7 @@ class PHPExcel_Worksheet_RowCellIterator extends PHPExcel_Worksheet_CellIterator
 	 * @param	string				$startColumn	The column address at which to start iterating
 	 * @param	string				$endColumn	    Optionally, the column address at which to stop iterating
 	 */
-	public function __construct(PHPExcel_Worksheet $subject = null, $rowIndex = 1, $startColumn = 'A', $endColumn = null) {
+	public function __construct(?PHPExcel_Worksheet $subject = null, $rowIndex = 1, $startColumn = 'A', $endColumn = null) {
 		// Set subject and row index
 		$this->_subject = $subject;
 		$this->_rowIndex = $rowIndex;
@@ -134,7 +134,7 @@ class PHPExcel_Worksheet_RowCellIterator extends PHPExcel_Worksheet_CellIterator
 	/**
 	 * Rewind the iterator to the starting column
 	 */
-	public function rewind() {
+	public function rewind(): void {
 		$this->_position = $this->_startColumn;
 	}
 
@@ -143,7 +143,7 @@ class PHPExcel_Worksheet_RowCellIterator extends PHPExcel_Worksheet_CellIterator
 	 *
 	 * @return PHPExcel_Cell
 	 */
-	public function current() {
+	public function current(): mixed {
 		return $this->_subject->getCellByColumnAndRow($this->_position, $this->_rowIndex);
 	}
 
@@ -152,14 +152,14 @@ class PHPExcel_Worksheet_RowCellIterator extends PHPExcel_Worksheet_CellIterator
 	 *
 	 * @return string
 	 */
-	public function key() {
+	public function key(): mixed {
 		return PHPExcel_Cell::stringFromColumnIndex($this->_position);
 	}
 
 	/**
 	 * Set the iterator to its next value
 	 */
-	public function next() {
+	public function next(): void {
         do {
             ++$this->_position;
         } while (($this->_onlyExistingCells) &&
@@ -193,7 +193,7 @@ class PHPExcel_Worksheet_RowCellIterator extends PHPExcel_Worksheet_CellIterator
 	 *
 	 * @return boolean
 	 */
-	public function valid() {
+	public function valid(): bool {
 		return $this->_position <= $this->_endColumn;
 	}
 

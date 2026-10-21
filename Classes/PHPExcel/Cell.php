@@ -33,6 +33,8 @@
  *    @package    PHPExcel_Cell
  *    @copyright  Copyright (c) 2006 - 2014 PHPExcel (http://www.codeplex.com/PHPExcel)
  */
+
+
 class PHPExcel_Cell
 {
 
@@ -104,11 +106,11 @@ class PHPExcel_Cell
     /**
      *    Send notification to the cache controller
      *
-     *    @return void
+     *    @return PHPExcel_Cell
      **/
-    public function notifyCacheController() {
+    public function notifyCacheController() 
+    {
         $this->_parent->updateCacheData($this);
-
         return $this;
     }
 
@@ -129,7 +131,7 @@ class PHPExcel_Cell
      *    @param    PHPExcel_Worksheet    $pSheet
      *    @throws    PHPExcel_Exception
      */
-    public function __construct($pValue = NULL, $pDataType = NULL, PHPExcel_Worksheet $pSheet = NULL)
+    public function __construct($pValue = NULL, $pDataType = NULL, ?PHPExcel_Worksheet $pSheet = NULL)
     {
         // Initialise cell value
         $this->_value = $pValue;
@@ -432,7 +434,7 @@ class PHPExcel_Cell
      *    @return    PHPExcel_Cell
      *    @throws    PHPExcel_Exception
      */
-    public function setDataValidation(PHPExcel_Cell_DataValidation $pDataValidation = NULL)
+    public function setDataValidation(?PHPExcel_Cell_DataValidation $pDataValidation = NULL)
     {
         if (!isset($this->_parent)) {
             throw new PHPExcel_Exception('Cannot set data validation for cell that is not bound to a worksheet');
@@ -480,7 +482,7 @@ class PHPExcel_Cell
      *    @return    PHPExcel_Cell
      *    @throws    PHPExcel_Exception
      */
-    public function setHyperlink(PHPExcel_Cell_Hyperlink $pHyperlink = NULL)
+    public function setHyperlink(?PHPExcel_Cell_Hyperlink $pHyperlink = NULL)
     {
         if (!isset($this->_parent)) {
             throw new PHPExcel_Exception('Cannot set hyperlink for cell that is not bound to a worksheet');
@@ -515,7 +517,7 @@ class PHPExcel_Cell
      *    @return boolean
      */
     public function isInMergeRange() {
-        return (boolean) $this->getMergeRange();
+        return (bool) $this->getMergeRange();
     }
 
     /**
@@ -835,19 +837,19 @@ error_log('---------------------------------------------------------------------
 
         //    We also use the language construct isset() rather than the more costly strlen() function to match the length of $pString
         //        for improved performance
-        if (isset($pString{0})) {
-            if (!isset($pString{1})) {
+        if (isset($pString[0])) {
+            if (!isset($pString[1])) {
                 $_indexCache[$pString] = $_columnLookup[$pString];
                 return $_indexCache[$pString];
-            } elseif(!isset($pString{2})) {
-                $_indexCache[$pString] = $_columnLookup[$pString{0}] * 26 + $_columnLookup[$pString{1}];
+            } elseif(!isset($pString[2])) {
+                $_indexCache[$pString] = $_columnLookup[$pString[0]] * 26 + $_columnLookup[$pString[1]];
                 return $_indexCache[$pString];
-            } elseif(!isset($pString{3})) {
-                $_indexCache[$pString] = $_columnLookup[$pString{0}] * 676 + $_columnLookup[$pString{1}] * 26 + $_columnLookup[$pString{2}];
+            } elseif(!isset($pString[3])) {
+                $_indexCache[$pString] = $_columnLookup[$pString[0]] * 676 + $_columnLookup[$pString[1]] * 26 + $_columnLookup[$pString[2]];
                 return $_indexCache[$pString];
             }
         }
-        throw new PHPExcel_Exception("Column string index can not be " . ((isset($pString{0})) ? "longer than 3 characters" : "empty"));
+        throw new PHPExcel_Exception("Column string index can not be " . ((isset($pString[0])) ? "longer than 3 characters" : "empty"));
     }
 
     /**
@@ -868,11 +870,11 @@ error_log('---------------------------------------------------------------------
             if ($pColumnIndex < 26) {
                 $_indexCache[$pColumnIndex] = chr(65 + $pColumnIndex);
             } elseif ($pColumnIndex < 702) {
-                $_indexCache[$pColumnIndex] = chr(64 + ($pColumnIndex / 26)) .
+                $_indexCache[$pColumnIndex] = chr(64 + (int) ($pColumnIndex / 26)) .
                                               chr(65 + $pColumnIndex % 26);
             } else {
-                $_indexCache[$pColumnIndex] = chr(64 + (($pColumnIndex - 26) / 676)) .
-                                              chr(65 + ((($pColumnIndex - 26) % 676) / 26)) .
+                $_indexCache[$pColumnIndex] = chr(64 + (int) (($pColumnIndex - 26) / 676)) .
+                                              chr(65 + (int) ((($pColumnIndex - 26) % 676) / 26)) .
                                               chr(65 + $pColumnIndex % 26);
             }
         }
@@ -911,7 +913,7 @@ error_log('---------------------------------------------------------------------
                 list($rangeStart, $rangeEnd)    = $range;
                 sscanf($rangeStart,'%[A-Z]%d', $startCol, $startRow);
                 sscanf($rangeEnd,'%[A-Z]%d', $endCol, $endRow);
-                $endCol++;
+                $endCol = str_increment($endCol);
 
                 // Current data
                 $currentCol    = $startCol;
@@ -923,7 +925,7 @@ error_log('---------------------------------------------------------------------
                         $returnValue[] = $currentCol.$currentRow;
                         ++$currentRow;
                     }
-                    ++$currentCol;
+                    $currentCol = str_increment($currentCol);
                     $currentRow = $startRow;
                 }
             }
@@ -980,7 +982,7 @@ error_log('---------------------------------------------------------------------
      * @param PHPExcel_Cell_IValueBinder $binder
      * @throws PHPExcel_Exception
      */
-    public static function setValueBinder(PHPExcel_Cell_IValueBinder $binder = NULL) {
+    public static function setValueBinder(?PHPExcel_Cell_IValueBinder $binder = NULL) {
         if ($binder === NULL) {
             throw new PHPExcel_Exception("A PHPExcel_Cell_IValueBinder is required for PHPExcel to function correctly.");
         }

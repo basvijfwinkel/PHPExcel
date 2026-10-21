@@ -34,15 +34,17 @@
  * @copyright  Copyright (c) 2006 - 2014 PHPExcel (http://www.codeplex.com/PHPExcel)
  */
 class PHPExcel_Shared_ZipStreamWrapper {
+	/** @var resource|null Stream context supplied by PHP. */
+	public $context;
 	/**
-	 * Internal ZipAcrhive
+	 * Internal ZipArchive
 	 *
-	 * @var ZipAcrhive
+	 * @var ZipArchive
 	 */
     private $_archive;
 
     /**
-     * Filename in ZipAcrhive
+     * Filename in ZipArchive
      *
      * @var string
      */
@@ -81,21 +83,32 @@ class PHPExcel_Shared_ZipStreamWrapper {
      */
     public function stream_open($path, $mode, $options, &$opened_path) {
         // Check for mode
-        if ($mode{0} != 'r') {
+        if ($mode[0] != 'r') {
             throw new PHPExcel_Reader_Exception('Mode ' . $mode . ' is not supported. Only read mode is supported.');
         }
 
 		$pos = strrpos($path, '#');
+		if ($pos === false) {
+			return false;
+		}
 		$url['host'] = substr($path, 6, $pos - 6); // 6: strlen('zip://')
 		$url['fragment'] = substr($path, $pos + 1);
 
         // Open archive
         $this->_archive = new ZipArchive();
-        $this->_archive->open($url['host']);
+        if ($this->_archive->open($url['host']) !== true) {
+            $this->_archive = null;
+            return false;
+        }
 
         $this->_fileNameInArchive = $url['fragment'];
         $this->_position = 0;
         $this->_data = $this->_archive->getFromName( $this->_fileNameInArchive );
+        if ($this->_data === false) {
+            $this->stream_close();
+            return false;
+        }
+        $opened_path = $path;
 
         return true;
     }
@@ -103,28 +116,63 @@ class PHPExcel_Shared_ZipStreamWrapper {
     /**
 	 * Implements support for fstat().
 	 *
-	 * @return  boolean
+	 * @return  string
      */
     public function statName() {
         return $this->_fileNameInArchive;
     }
 
-    /**
-	 * Implements support for fstat().
-	 *
-	 * @return  boolean
-     */
-    public function url_stat() {
-        return $this->statName( $this->_fileNameInArchive );
+    /** Retrieve metadata without requiring an already-open stream. */
+    public function url_stat($path, $flags): array|false {
+        $separator = strrpos($path, '#');
+        if ($separator === false) {
+            return false;
+        }
+        $archive = new ZipArchive();
+        if ($archive->open(substr($path, 6, $separator - 6)) !== true) {
+            return false;
+        }
+        $name = substr($path, $separator + 1);
+        try {
+            return self::entryStat($archive->statName($name), $name);
+        } finally {
+            $archive->close();
+        }
+    }
+
+    /** Convert ZIP entry metadata to the standard stat() structure. */
+    private static function entryStat($entry, $name): array|false {
+        if ($entry === false) {
+            return false;
+        }
+        $stat = array_fill_keys(array(
+            'dev', 'ino', 'mode', 'nlink', 'uid', 'gid', 'rdev',
+            'size', 'atime', 'mtime', 'ctime', 'blksize', 'blocks',
+        ), 0);
+        $stat['mode'] = str_ends_with($name, '/') ? 0040555 : 0100444;
+        $stat['nlink'] = 1;
+        $stat['size'] = $entry['size'];
+        $stat['mtime'] = $entry['mtime'];
+        return array_merge(array_values($stat), $stat);
     }
 
     /**
 	 * Implements support for fstat().
 	 *
-	 * @return  boolean
+	 * @return  array|false
      */
     public function stream_stat() {
-        return $this->_archive->statName( $this->_fileNameInArchive );
+        if ($this->_archive === null) {
+            return false;
+        }
+        return self::entryStat($this->_archive->statName($this->_fileNameInArchive), $this->_fileNameInArchive);
+    }
+
+    public function stream_close() {
+        if ($this->_archive !== null) {
+            $this->_archive->close();
+            $this->_archive = null;
+        }
     }
 
     /**
@@ -166,36 +214,17 @@ class PHPExcel_Shared_ZipStreamWrapper {
 	 * @return	bool
      */
     public function stream_seek($offset, $whence) {
-        switch ($whence) {
-            case SEEK_SET:
-                if ($offset < strlen($this->_data) && $offset >= 0) {
-                     $this->_position = $offset;
-                     return true;
-                } else {
-                     return false;
-                }
-                break;
-
-            case SEEK_CUR:
-                if ($offset >= 0) {
-                     $this->_position += $offset;
-                     return true;
-                } else {
-                     return false;
-                }
-                break;
-
-            case SEEK_END:
-                if (strlen($this->_data) + $offset >= 0) {
-                     $this->_position = strlen($this->_data) + $offset;
-                     return true;
-                } else {
-                     return false;
-                }
-                break;
-
-            default:
-                return false;
+        $length = strlen($this->_data);
+        $position = match ($whence) {
+            SEEK_SET => $offset,
+            SEEK_CUR => $this->_position + $offset,
+            SEEK_END => $length + $offset,
+            default => -1,
+        };
+        if ($position < 0 || $position > $length) {
+            return false;
         }
+        $this->_position = $position;
+        return true;
     }
 }

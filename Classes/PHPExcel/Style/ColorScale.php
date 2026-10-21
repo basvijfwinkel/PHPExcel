@@ -36,6 +36,8 @@
  */
 class PHPExcel_Style_ColorScale extends PHPExcel_Style_GroupedConditional implements PHPExcel_IComparable
 {
+	protected $_extlst_cfvos;
+
 
 	/**
 	* CFVO Array

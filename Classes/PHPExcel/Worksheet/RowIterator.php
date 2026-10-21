@@ -74,7 +74,7 @@ class PHPExcel_Worksheet_RowIterator implements Iterator
 	 * @param	integer				$startRow	The row number at which to start iterating
 	 * @param	integer				$endRow	    Optionally, the row number at which to stop iterating
 	 */
-	public function __construct(PHPExcel_Worksheet $subject = null, $startRow = 1, $endRow = null) {
+	public function __construct(?PHPExcel_Worksheet $subject = null, $startRow = 1, $endRow = null) {
 		// Set subject
 		$this->_subject = $subject;
 		$this->resetEnd($endRow);
@@ -132,7 +132,7 @@ class PHPExcel_Worksheet_RowIterator implements Iterator
 	/**
 	 * Rewind the iterator to the starting row
 	 */
-	public function rewind() {
+	public function rewind(): void {
 		$this->_position = $this->_startRow;
 	}
 
@@ -141,7 +141,7 @@ class PHPExcel_Worksheet_RowIterator implements Iterator
 	 *
 	 * @return PHPExcel_Worksheet_Row
 	 */
-	public function current() {
+	public function current(): mixed {
 		return new PHPExcel_Worksheet_Row($this->_subject, $this->_position);
 	}
 
@@ -150,14 +150,14 @@ class PHPExcel_Worksheet_RowIterator implements Iterator
 	 *
 	 * @return int
 	 */
-	public function key() {
+	public function key(): mixed {
 		return $this->_position;
 	}
 
 	/**
 	 * Set the iterator to its next value
 	 */
-	public function next() {
+	public function next(): void {
 		++$this->_position;
 	}
 
@@ -177,7 +177,7 @@ class PHPExcel_Worksheet_RowIterator implements Iterator
 	 *
 	 * @return boolean
 	 */
-	public function valid() {
+	public function valid(): bool {
 		return $this->_position <= $this->_endRow;
 	}
 }
